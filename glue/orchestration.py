@@ -14,7 +14,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DIR = BASE_DIR / "data_warehouse" 
-dir = str(DIR)
+
 class BookPipeline :
     def __init__(self):
         self.spark = SparkConfig.creat_sparksession()

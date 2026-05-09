@@ -142,7 +142,7 @@ class BookPipeline :
                 .mode("overwrite") \
                 .option("compression", "snappy") \
                 .option("maxRecordsPerFile", 500000) \
-                .parquet(f"s3://mhai-bk/data_warehouse/{name}")
+                .parquet(f"s3://mhai-bk/warehouse/{name}")
             else :
                 df = df.persist() # Cache
                 df.repartition(50) \
@@ -150,7 +150,7 @@ class BookPipeline :
                 .mode("overwrite") \
                 .option("compression", "snappy") \
                 .option("maxRecordsPerFile", 500000) \
-                .parquet(f"s3://mhai-bk/data_warehouse/{name}")
+                .parquet(f"s3://mhai-bk/warehouse/{name}")
     
     def spark_stop(self) :
         self.spark.stop()

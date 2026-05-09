@@ -131,14 +131,26 @@ class BookPipeline :
         print("="*60 )
 
         for name, df in self.result.items() :
-            df_partition = df.withColumn("year" , year(current_date())) \
-                             .withColumn("month" , month(current_date())) \
-                             .withColumn("day" , day(current_date()))
-            
-            df_partition.write \
-              .partitionBy("year", "month", "day") \
-              .mode("overwrite") \
-              .parquet(f"s3://mhai-bk/data_warehouse/{name}")
+            if name != "fact_book" :
+                df_partition = df.withColumn("year" , year(current_date())) \
+                                .withColumn("month" , month(current_date())) \
+                                .withColumn("day" , day(current_date()))
+                
+                df_partition.repartition(50) \
+                .write \
+                .partitionBy("year", "month", "day") \
+                .mode("overwrite") \
+                .option("compression", "snappy") \
+                .option("maxRecordsPerFile", 500000) \
+                .parquet(f"s3://mhai-bk/data_warehouse/{name}")
+            else :
+                df = df.persist() # Cache
+                df.repartition(50) \
+                .write \
+                .mode("overwrite") \
+                .option("compression", "snappy") \
+                .option("maxRecordsPerFile", 500000) \
+                .parquet(f"s3://mhai-bk/data_warehouse/{name}")
     
     def spark_stop(self) :
         self.spark.stop()

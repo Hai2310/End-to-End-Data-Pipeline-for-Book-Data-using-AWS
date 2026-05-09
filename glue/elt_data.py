@@ -134,7 +134,7 @@ class EtlPipeline :
         # Tạo bảng fact_book
         fact_book = edition_clean.select("edition_id", "work_id", col("publish_date").alias("publish_year"), "number_of_pages")
         # Join với bảng dim_time lấy time_id
-        fact_book = fact_book.join(dim_time.select("time_id", "publish_year"), on = "publish_year", how = "left") \
+        fact_book = fact_book.join(broadcast(dim_time.select("time_id", "publish_year")), on = "publish_year", how = "left") \
                             .drop("publish_year") \
                             .select("edition_id", "work_id", "time_id", "number_of_pages")
         return fact_book

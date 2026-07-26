@@ -34,7 +34,7 @@ Pipeline thực hiện toàn bộ vòng đời dữ liệu:
 ## Kiến trúc hệ thống
 
 <p align="center">
-  <img src="docs/aws-book-pipeline-architecture.png" alt="End-to-End Book Data Pipeline Architecture on AWS" width="100%">
+  <img src="aws-book-pipeline-architecture.png" alt="End-to-End Book Data Pipeline Architecture on AWS" width="100%">
 </p>
 
 ### Luồng dữ liệu chính
@@ -283,9 +283,6 @@ Dự án sử dụng mô hình gần với **star schema mở rộng**, kết h�
 - Loại author không có tên hoặc có tên không hợp lệ.
 - Trích năm sinh bằng regex.
 
-> [!NOTE]
-> Code hiện tại sinh một năm ngẫu nhiên cho `birth_date` bị thiếu. Với hệ thống production, nên để `NULL`, dùng cờ `is_birth_year_imputed`, hoặc áp dụng quy tắc suy diễn có thể kiểm chứng thay vì tạo dữ liệu ngẫu nhiên.
-
 ## Cấu trúc S3 đề xuất
 
 ```text
@@ -354,9 +351,6 @@ s3://<YOUR_BUCKET>/
     ├── Layout2.png
     └── Layout3.png
 ```
-
-> [!CAUTION]
-> Không commit private key như `*.pem`, mật khẩu Redshift, access key hoặc `.env` lên GitHub. Nếu private key từng được public, cần xóa khỏi Git history và rotate/revoke key ngay.
 
 ## Yêu cầu trước khi chạy
 
@@ -557,12 +551,6 @@ Trong Glue Job:
 - Python library path: `s3://<YOUR_BUCKET>/scripts/glue/glue_libs.zip`
 - IAM Role: có quyền đọc `raw_data/` và ghi `warehouse/`.
 
-> [!IMPORTANT]
-> `glue/orchestration.py` hiện sử dụng `SparkConfig` nhưng chưa import lớp này. Cần thêm dòng sau trước khi đóng gói và chạy:
->
-> ```python
-> from configuration import SparkConfig
-> ```
 
 ### Bước 5: Chạy Glue ETL
 
@@ -591,9 +579,6 @@ year=<YYYY>/month=<MM>/day=<DD>/
 `fact_book` hiện được ghi bằng `mode("overwrite")` mà không partition theo ngày.
 
 ### Bước 6: Tạo schema book warehouse trong Redshift
-
-> [!WARNING]
-> File `redshift/create_table.sql` hiện chứa schema e-commerce (`fact_sales`, `dim_customer`, `dim_product`...) và không khớp với pipeline dữ liệu sách. Không chạy file đó trên Redshift production trước khi thay bằng schema phù hợp.
 
 Reference DDL tối thiểu:
 
@@ -1219,7 +1204,7 @@ Repository hiện chưa khai báo license. Trước khi public hoặc cho phép 
 ## Tác giả
 
 **Hoàng Minh Hải**  
-Data Engineering · Data Analytics · AWS · PySpark · Python
+Data Engineering 
 
 ---
 
